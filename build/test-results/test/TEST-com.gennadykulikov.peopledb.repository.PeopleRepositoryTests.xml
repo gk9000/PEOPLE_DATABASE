@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" tests="15" skipped="1" failures="0" errors="0" timestamp="2022-09-12T10:43:43" hostname="VP-KOMPUTER" time="0.941">
+  <properties/>
+  <testcase name="canFindPersonByIdWithBusinessAddress()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.477"/>
+  <testcase name="canDeleteMultipleWithSimpleStatement()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.126"/>
+  <testcase name="canSavePersonWithHomeAddress()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.009"/>
+  <testcase name="testPersonIdNotFound()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.007"/>
+  <testcase name="canDelete()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.014"/>
+  <testcase name="canFindPersonByIdWithHomeAddress()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.01"/>
+  <testcase name="canFindPersonById()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.007"/>
+  <testcase name="canSavePersonWithBusinessAddress()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.004"/>
+  <testcase name="canSaveTwoPeople()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.005"/>
+  <testcase name="canUpdate()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.016"/>
+  <testcase name="canFindPersonByIdWithBothAddresses()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.011"/>
+  <testcase name="canGetCount()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.01"/>
+  <testcase name="canSaveOnePerson()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.004"/>
+  <testcase name="loadData()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="canFindAll()" classname="com.gennadykulikov.peopledb.repository.PeopleRepositoryTests" time="0.221"/>
+  <system-out><![CDATA[created person Person{id=null, firstName='Elena', lastName='Maksimova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional.empty, business address=Optional[Address{id=null, address1='33 Big Str.', address2='44 Small Str.', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+saved person Person{id=12774, firstName='Elena', lastName='Maksimova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional.empty, business address=Optional[Address{id=398, address1='33 Big Str.', address2='44 Small Str.', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+null
+Person{id=null, firstName='Elena', lastName='Maksimova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional[Address{id=null, address1='33 Big Str.', address2='44 Small Str.', city='Iron Town', county='Fulton County', state='CA', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional.empty}
+saved Person{id=12779, firstName='Elena', lastName='Maksimova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional[Address{id=400, address1='33 Big Str.', address2='44 Small Str.', city='Iron Town', county='Fulton County', state='CA', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional.empty}
+found Person{id=12779, firstName='Elena', lastName='Maksimova', dob=1990-02-18T19:40:25Z, salary=1111.11, home address=Optional[Address{id=400, address1='33 Big Str.', address2='44 Small Str.', city='Iron Town', county='Fulton County', state='CA', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional.empty}
+Person{id=12780, firstName='Test', lastName='Test', dob=1990-02-18T22:10:10.000100+02:00, salary=1111.11, home address=Optional.empty, business address=Optional.empty}
+Person{id=12780, firstName='Test', lastName='Test', dob=1990-02-18T20:10:10.000100Z, salary=1111.11, home address=Optional.empty, business address=Optional.empty}
+created person Person{id=null, firstName='Elena', lastName='Popova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional[Address{id=null, address1='33 Big Str.', address2='ap.5', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional[Address{id=null, address1='666 Satan Str.', address2='Office 44', city='Iron Town', county='Fulton County', state='FL', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+saved person Person{id=12785, firstName='Elena', lastName='Popova', dob=1990-02-18T22:40:25.000000006+03:00, salary=1111.11, home address=Optional[Address{id=402, address1='33 Big Str.', address2='ap.5', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional[Address{id=403, address1='666 Satan Str.', address2='Office 44', city='Iron Town', county='Fulton County', state='FL', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+found person Person{id=12785, firstName='Elena', lastName='Popova', dob=1990-02-18T19:40:25Z, salary=1111.11, home address=Optional[Address{id=402, address1='33 Big Str.', address2='ap.5', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional[Address{id=403, address1='666 Satan Str.', address2='Office 44', city='Iron Town', county='Fulton County', state='FL', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+found person Person{id=12785, firstName='Elena', lastName='Popova', dob=1990-02-18T19:40:25Z, salary=1111.11, home address=Optional[Address{id=402, address1='33 Big Str.', address2='ap.5', city='Iron Town', county='Fulton County', state='NY', postalcode='642-643', region='SOUTHWEST', country='US'}], business address=Optional[Address{id=403, address1='666 Satan Str.', address2='Office 44', city='Iron Town', county='Fulton County', state='FL', postalcode='642-643', region='SOUTHWEST', country='US'}]}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
