@@ -1,8 +1,8 @@
 package com.gennadykulikov.peopledb.repository;
 
 import com.gennadykulikov.peopledb.annotations.SQL;
+import com.gennadykulikov.peopledb.exception.DataException;
 import com.gennadykulikov.peopledb.model.Entity;
-import com.gennadykulikov.peopledb.model.Person;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,22 +13,31 @@ import java.util.stream.Collectors;
 
 abstract class CRUDRepository <T extends Entity> {
     protected Connection connection;
+    private PreparedStatement savePS;
+    private PreparedStatement findByIdPS;
+
 
     public CRUDRepository(Connection connection) {
-        this.connection = connection;
+        try {
+            this.connection = connection;
+            savePS = connection.prepareStatement(getSqlByAnnotation("mapForSave"), Statement.RETURN_GENERATED_KEYS);
+            findByIdPS = connection.prepareStatement(getSqlByAnnotation("mapForFindById"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
+        }
     }
-
 
 
     public T save(T entity) {
         try{
-            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation("mapForSave"), Statement.RETURN_GENERATED_KEYS);
-            mapForSave(entity, ps);
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
+            mapForSave(entity, savePS);
+            savePS.executeUpdate();
+            ResultSet rs = savePS.getGeneratedKeys();
             while (rs.next()){
                 long id = rs.getLong(1);
                 entity.setId(id);
+                postSave(entity,id);
             }
         }  catch (SQLException e){
             e.printStackTrace();
@@ -36,45 +45,39 @@ abstract class CRUDRepository <T extends Entity> {
         return entity;
     }
 
-    abstract void mapForSave(T entity, PreparedStatement ps) throws SQLException;
-//     String getSaveSql(){
-//         return "";
-//     };
+    protected void postSave(T entity, long id) {}
 
+    abstract void mapForSave(T entity, PreparedStatement ps) throws SQLException;
 
     abstract T mapForFindById(long id, PreparedStatement ps) throws SQLException;
 
     public Optional<T> findById(Long id) {
         T foundEntity=null;
         try {
-            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation("mapForFindById"));
-            ps.setLong(1,id);
-            ps.setLong(2,id);
-            ps.setLong(3,id);
-            foundEntity = mapForFindById(id, ps);
+            findByIdPS.setLong(1,id);
+            foundEntity = mapForFindById(id, findByIdPS);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
         return Optional.ofNullable(foundEntity);
     }
-
-//    abstract String getFindByIdSql();
-
-
 
 
     public List<T> findAll(){
         T entity=null;
         List <T> entities = new ArrayList<>();
         try{
-            PreparedStatement ps = connection.prepareStatement(getSqlByAnnotation("mapForFindAll"));
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement findAllPS = connection.prepareStatement(getSqlByAnnotation("mapForFindAll"),
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = findAllPS.executeQuery();
             while(rs.next()){
-                entity = mapForFindAll(rs, ps);
+                entity = mapForFindAll(rs, findAllPS);
                 entities.add(entity);
             }
         } catch (SQLException e){
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
         return entities;
     }
@@ -82,20 +85,20 @@ abstract class CRUDRepository <T extends Entity> {
 
 
     abstract T mapForFindAll(ResultSet rs, PreparedStatement ps) throws SQLException;
-//    abstract String getFindAllSql();
 
 
 
-    public long count () {
+    public long count () throws SQLException {
+       PreparedStatement countPS = connection.prepareStatement(getCountSql());
         long count = 0;
         try {
-            PreparedStatement ps = connection.prepareStatement(getCountSql());
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = countPS.executeQuery();
             if (rs.next()) {
                 count = rs.getLong(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
         return count;
     }
@@ -111,6 +114,7 @@ abstract class CRUDRepository <T extends Entity> {
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
     }
 
@@ -121,6 +125,7 @@ abstract class CRUDRepository <T extends Entity> {
             statement.executeUpdate(getDeleteMultipleWithSimpleStatement().replace(":ids", ids));
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
     }
 
@@ -135,22 +140,13 @@ abstract class CRUDRepository <T extends Entity> {
             mapForUpdate(ps,entity);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DataException("Unable to create prepared statements for CRUDRepository", e);
         }
     }
 
-//     abstract String getUpdateSql();
+
     abstract T mapForUpdate(PreparedStatement ps,T entity) throws SQLException;
 
-
-
-
-//    private String getSqlByAnnotation(String methodName, Supplier<String> sqlGetter){
-//        return Arrays.stream(this.getClass().getDeclaredMethods())
-//                .filter(m -> methodName.equals(m.getName()))
-//                .map(m -> m.getAnnotation(SQL.class))
-//                .map(SQL::value)
-//                .findFirst().orElseGet(sqlGetter);
-//    }
 
     private String getSqlByAnnotation(String methodName){
         return Arrays.stream(this.getClass().getDeclaredMethods())
@@ -161,7 +157,5 @@ abstract class CRUDRepository <T extends Entity> {
     }
 
     abstract Entity extractEntityFromResultSet(ResultSet rs) throws SQLException;
-
-
 
 }

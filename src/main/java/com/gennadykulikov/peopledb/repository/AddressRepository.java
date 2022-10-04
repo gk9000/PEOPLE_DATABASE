@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class AddressRepository extends CRUDRepository<Address>{
 
@@ -30,7 +29,6 @@ public class AddressRepository extends CRUDRepository<Address>{
         ps.setString(7, address.getRegion());
         ps.setString(8, address.getCountry());
     }
-
 
 
     @Override

@@ -3,7 +3,9 @@ package com.gennadykulikov.peopledb.model;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class Person implements Entity {
     private Long id;
@@ -14,6 +16,8 @@ public class Person implements Entity {
     private String email;
     private Optional <Address> homeAddress = Optional.empty();
     private Optional <Address> businessAddress = Optional.empty();
+    private Set<Person> children = new HashSet<>();
+    private Optional <Person> parent = Optional.empty();
 
 
     public Person(String firstName, String lastName, ZonedDateTime dob,BigDecimal salary) {
@@ -83,22 +87,17 @@ public class Person implements Entity {
         if (id != null ? !id.equals(person.id) : person.id != null) return false;
         if (!firstName.equals(person.firstName)) return false;
         if (!lastName.equals(person.lastName)) return false;
-        if (!salary.equals(person.salary)) return false;
         return dob.withZoneSameInstant(ZoneId.of("+0")).equals(person.dob.withZoneSameInstant(ZoneId.of("+0")));
     }
 
-//    @Override
-//    public int hashCode() {
-//        int result = id != null ? id.hashCode() : 0;
-//        result = 31 * result + firstName.hashCode();
-//        result = 31 * result + lastName.hashCode();
-//        result = 31 * result + dob.hashCode();
-//        return result;
-//    }
-
-    //        return dob != null ? dob.withZoneSameInstant(ZoneId.of("+0")).equals(person.dob.withZoneSameInstant(ZoneId.of("+0"))) : person.dob == null;
-
-
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        result = 31 * result + dob.hashCode();
+        return result;
+    }
 
 
     @Override
@@ -127,5 +126,22 @@ public class Person implements Entity {
     }
     public Optional <Address> getBusinessAddress() {
         return businessAddress;
+    }
+
+    public void addChild(Person child) {
+        children.add(child);
+        child.setParent(this);
+    }
+
+    public Set<Person> getChildren(){
+        return children;
+    }
+
+    public void setParent(Person parent) {
+        this.parent = Optional.ofNullable(parent);
+    }
+
+    public Optional<Person> getParent(){
+        return parent;
     }
 }
